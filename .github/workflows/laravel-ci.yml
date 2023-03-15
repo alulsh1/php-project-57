@@ -1,0 +1,44 @@
+name: Laravel CI
+on:
+  pull_request:
+    branches: [ master, staging ]
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Copy .env.example to .env
+    run: php -r "file_exists('.env') || copy('.env.example', '.env');	
+    - name: Install composer dependencies
+    run: composer install
+    - name: Set required directory permissions
+    run: chmod -R 777 storage bootstrap/cache	
+    - name: Generate encryption key
+    run: php artisan key:generate
+    - name: Create temporary sqlite database
+    run: |
+    mkdir -p database
+    touch database/database.sqlite
+    - name: Run laravel database migrations
+    env:
+    DB_CONNECTION: sqlite
+    DB_DATABASE: database/database.sqlite
+    run: php artisan migrate --force
+    - name: Run unit tests via PHPUnit
+    env:
+    DB_CONNECTION: sqlite
+    DB_DATABASE: database/database.sqlite
+    run: ./vendor/bin/phpunit
+    - name: Run linter
+    run: make lint
+    - name: Run tests
+    run: make test
+    - name: Run test & publish code coverage
+    uses: paambaati/codeclimate-action@v3.2.0
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      XDEBUG_MODE: coverage
+    with:
+      coverageCommand: make test-coverage
+      coverageLocations: ${{github.workplace}}/build/logs/clover.xml:clover
+      debug: true	
