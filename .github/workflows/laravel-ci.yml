@@ -1,5 +1,5 @@
 name: author-check
-'on': push
+on: push
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -8,9 +8,9 @@ jobs:
       - name: Install
         run: make install
       - name: Copy .env
-        run: 'php -r "file_exists(''.env'') || copy(''.env.testing'', ''.env'');"'
+        run: php -r "file_exists('.env') || copy('.env.testing', '.env');"
       - name: Generate key
-        run: 'php artisan key:generate --env=testing'
+        run: php artisan key:generate --env=testing
       - name: Run linter
         run: make lint
       - name: Create Database
@@ -26,10 +26,8 @@ jobs:
       - name: Run test & publish code coverage
         uses: paambaati/codeclimate-action@v3.2.0
         env:
-          CC_TEST_REPORTER_ID: '${{ secrets.CC_TEST_REPORTER_ID }}'
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           XDEBUG_MODE: coverage
         with:
-          coverageCommand: >-
-            composer exec --verbose phpunit tests -- --coverage-clover
-            build/logs/clover.xml
+          coverageCommand: composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
           debug: true
