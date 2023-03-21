@@ -1,45 +1,45 @@
 name: Laravel CI
-on: push
+'on': push
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Copy .env.example to .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-    - name: Install composer dependencies
-      run: composer install
-    - name: Set required directory permissions
-      run: chmod -R 777 storage bootstrap/cache
-    - name: Generate encryption key
-      run: php artisan key:generate
-    - name: Create temporary sqlite database
-      run: |
-        mkdir -p database
-        touch database/database.sqlite
-    - name: Run laravel database migrations
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: php artisan migrate --force
-    - name: Run unit tests via PHPUnit
-      env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
-      run: ./vendor/bin/phpunit
-      - name: Launch Vite
+      - uses: actions/checkout@v3
+      - name: Copy .env.example to .env
+        run: 'php -r "file_exists(''.env'') || copy(''.env.example'', ''.env'');"'
+      - name: Install composer dependencies
+        run: composer install
+      - name: Set required directory permissions
+        run: chmod -R 777 storage bootstrap/cache
+      - name: Generate encryption key
+        run: 'php artisan key:generate'
+      - name: Create temporary sqlite database
         run: |
-          npm install
-          npm run build	  
-    - name: Run linter
-      run: make lint
-    - name: Run tests
-      run: composer exec --verbose phpunit tests
-    - name: Run test & publish code coverage
-      uses: paambaati/codeclimate-action@v3.2.0
-      env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+          mkdir -p database
+          touch database/database.sqlite
+      - name: Run laravel database migrations
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan migrate --force
+      - name: Run unit tests via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: ./vendor/bin/phpunit
+      - name: Launch Vite
+        run: "npm install\nnpm run build\t  \n"
+      - name: Run linter
+        run: make lint
+      - name: Run tests
+        run: composer exec --verbose phpunit tests
+      - name: Run test & publish code coverage
+        uses: paambaati/codeclimate-action@v3.2.0
+        env:
+          CC_TEST_REPORTER_ID: '${{ secrets.CC_TEST_REPORTER_ID }}'
           XDEBUG_MODE: coverage
-      with:
-          coverageCommand: composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
+        with:
+          coverageCommand: >-
+            composer exec --verbose phpunit tests -- --coverage-clover
+            build/logs/clover.xml
           debug: true
