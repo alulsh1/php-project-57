@@ -69,7 +69,7 @@ class TaskController extends Controller
         $task = new Task();
         $task->fill($data);
         $task->save();
-        $task->labels()->attach($labels);
+        $task->labels()->attach(array_diff($labels, [null]));
         flash(__("messages.taskcreate"))->success();
         return redirect()->route("tasks.index");
     }
@@ -121,7 +121,7 @@ class TaskController extends Controller
         $data = $request->validated();
         $labels = $request->labels;
         $task->update($data);
-        $task->labels()->sync($labels);
+        $task->labels()->sync(array_diff($labels, [null]));
         flash(__("messages.taskupdate"))->success();
         return redirect()->route("tasks.index");
     }
