@@ -27,6 +27,10 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: ./vendor/bin/phpunit
+      - name: Launch Vite
+        run: |
+          npm install
+          npm run build	  
     - name: Run linter
       run: make lint
     - name: Run tests
