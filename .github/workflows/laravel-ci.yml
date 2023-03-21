@@ -24,8 +24,8 @@ jobs:
         run: php artisan migrate --force
       - name: Run unit tests via PHPUnit
         env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+          DB_CONNECTION: sqlite_testing
+          DB_DATABASE: database/testing.sqlite
         run: ./vendor/bin/phpunit
       - name: Launch Vite
         run: "npm install\nnpm run build\t  \n"
