@@ -71,8 +71,21 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskStoreRequest $request): RedirectResponse
+    public function store(Request $request)
     {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "name" => "required | unique:tasks",
+                "description" => "nullable|string",
+                "status_id" => "required",
+                "assigned_to_id" => "nullable|integer",
+            ],
+            [
+                "name.unique" => "«адача с таким именем уже существует",
+            ]
+        );
+
         $data = $request->validated();
         $user = Auth::user();
         $labels = $request->labels;
@@ -128,10 +141,26 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(
-        TaskUpdateRequest $request,
-        Task $task
-    ): RedirectResponse {
+    public function update(Request $request, Task $task)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                //   'name' => 'required | unique:tasks,name,'.$this->task->id,
+
+                "name" => [
+                    "required",
+                    Rule::unique("tasks")->ignore($this->task->id),
+                ],
+                "description" => "nullable|string",
+                "status_id" => "required",
+                "assigned_to_id" => "nullable|integer",
+            ],
+            [
+                "name.unique" => "«адача с таким именем уже существует",
+            ]
+        );
+
         $data = $request->validated();
         $labels = $request->labels ?? [];
         $task->update($data);
