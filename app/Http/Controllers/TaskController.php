@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use Illuminate\Http\Request;
 use App\Models\TaskStatus;
 use App\Models\User;
 use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
+use Illuminate\Http\Request;
 use App\Models\Label;
+use Illuminate\Http\RedirectResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -26,13 +26,13 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $statuses = TaskStatus::has("tasks")
-            ->pluck("name", "id")
-            ->toArray();
+        $statuses = TaskStatus::all()->mapWithKeys(function ($item, $key) {
+            return [$item["id"] => $item["name"]];
+        });
 
-        $users = User::all()
-            ->pluck("name", "id")
-            ->toArray();
+        $users = User::all()->mapWithKeys(function ($item, $key) {
+            return [$item["id"] => $item["name"]];
+        });
 
         $tasks = QueryBuilder::for(Task::class)
             ->allowedFilters([
@@ -70,10 +70,10 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TaskStoreRequest $request)
+    public function store(TaskStoreRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $user = Auth::user();
+        $user = $request->user();
 
         $data["created_by_id"] = $user->id;
         $labels = $request->labels;
@@ -128,8 +128,10 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(TaskUpdateRequest $request, Task $task)
-    {
+    public function update(
+        TaskUpdateRequest $request,
+        Task $task
+    ): RedirectResponse {
         $data = $request->validated();
         $labels = $request->labels ?? [];
         $task->update($data);

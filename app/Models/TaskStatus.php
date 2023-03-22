@@ -21,4 +21,8 @@ class TaskStatus extends Model
     {
         return $this->hasMany(Task::class, "status_id", "id");
     }
+    public function task()
+    {
+        return $this->hasOne(Task::class, "status_id", "id");
+    }
 }
