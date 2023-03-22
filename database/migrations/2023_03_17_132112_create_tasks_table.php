@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,13 +12,24 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create("tasks", function (Blueprint $table) {
             $table->id();
-			$table->string('name');
-			$table->text('description')->nullable();
-			$table->foreignId('created_by_id')->nullable()->index()->constrained('users');		
-			$table->foreignId('assigned_to_id')->nullable()->index()->constrained('users');		
-			$table->foreignId('status_id')->index()->constrained('task_statuses');			
+            $table->string("name");
+            $table->text("description")->nullable();
+            $table
+                ->foreignId("created_by_id")
+                ->nullable()
+                ->index()
+                ->constrained("users");
+            $table
+                ->foreignId("assigned_to_id")
+                ->nullable()
+                ->index()
+                ->constrained("users");
+            $table
+                ->foreignId("status_id")
+                ->index()
+                ->constrained("task_statuses");
             $table->timestamps();
         });
     }
@@ -31,6 +41,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists("tasks");
     }
 };

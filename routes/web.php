@@ -16,39 +16,51 @@ use App\Http\Controllers\LabelController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-Route::resource('tasks', TaskController::class);
+Route::resource("tasks", TaskController::class);
 
-Route::resource('task_statuses', TaskStatusController::class)->only([
-    'index'
-]);
-Route::resource('labels', LabelController::class)->only([
-    'index'
-]);
+Route::resource("task_statuses", TaskStatusController::class)->only(["index"]);
+Route::resource("labels", LabelController::class)->only(["index"]);
 
+Route::middleware("taskauf")->group(function () {
+    Route::resource("labels", LabelController::class)->only([
+        "create",
+        "store",
+        "update",
+        "destroy",
+        "edit",
+        "show",
+    ]);
 
-Route::middleware('taskauf')->group(function () {
-Route::resource('labels', LabelController::class)->only([
-    'create', 'store', 'update', 'destroy' ,'edit','show'
-]); 
-
-Route::resource('task_statuses', TaskStatusController::class)->only([
-    'create', 'store', 'update', 'destroy' ,'edit','show'
-]); 
-
+    Route::resource("task_statuses", TaskStatusController::class)->only([
+        "create",
+        "store",
+        "update",
+        "destroy",
+        "edit",
+        "show",
+    ]);
 });
 
-Route::get('/', function () {
-    return view('nav');
-})->name('nav');
+Route::get("/", function () {
+    return view("nav");
+})->name("nav");
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get("/dashboard", function () {
+    return view("dashboard");
+})
+    ->middleware(["auth", "verified"])
+    ->name("dashboard");
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware("auth")->group(function () {
+    Route::get("/profile", [ProfileController::class, "edit"])->name(
+        "profile.edit"
+    );
+    Route::patch("/profile", [ProfileController::class, "update"])->name(
+        "profile.update"
+    );
+    Route::delete("/profile", [ProfileController::class, "destroy"])->name(
+        "profile.destroy"
+    );
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . "/auth.php";

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,10 +12,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('task_label', function (Blueprint $table) {
+        Schema::create("task_label", function (Blueprint $table) {
             $table->id();
-			$table->unsignedBigInteger('task_id');
-			$table->unsignedBigInteger('label_id');
+            $table->unsignedBigInteger("task_id");
+            $table->unsignedBigInteger("label_id");
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('task_label');
+        Schema::dropIfExists("task_label");
     }
 };
