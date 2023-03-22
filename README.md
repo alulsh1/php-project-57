@@ -1,6 +1,6 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/alulsh1/php-project-57/workflows/hexlet-check/badge.svg)](https://github.com/alulsh1/php-project-57/actions)
-[![hello](https://github.com/alulsh1/php-project-57/actions/workflows/hello.yml/badge.svg)](https://github.com/alulsh1/php-project-57/actions/workflows/hello.yml)
+[![hello](https://github.com/alulsh1/php-project-57/actions/workflows/laravel-ci.yml/badge.svg)](https://github.com/alulsh1/php-project-57/actions/workflows/laravel-ci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/df2fd10d34b1893371c8/maintainability)](https://codeclimate.com/github/alulsh1/php-project-57/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/df2fd10d34b1893371c8/test_coverage)](https://codeclimate.com/github/alulsh1/php-project-57/test_coverage)
 
