@@ -119,7 +119,7 @@ class TaskController extends Controller
     public function update(TaskUpdateRequest $request, Task $task)
     {
         $data = $request->validated();
-        $labels = $request->labels;
+        $labels = $request->labels ?? [];
         $task->update($data);
         $task->labels()->sync(array_diff($labels, [null]));
         flash(__("messages.taskupdate"))->success();
