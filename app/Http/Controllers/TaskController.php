@@ -7,6 +7,7 @@ use App\Models\TaskStatus;
 use App\Models\User;
 use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Label;
 use Illuminate\Http\RedirectResponse;
@@ -73,12 +74,11 @@ class TaskController extends Controller
     public function store(TaskStoreRequest $request): RedirectResponse
     {
         $data = $request->validated();
-        $user = $request->user();
-
-        $data["created_by_id"] = $user->id;
+        $user = Auth::user();
         $labels = $request->labels;
 
         $task = new Task();
+        $task = $user->createdTasks()->make();
         $task->fill($data);
         $task->save();
         $task->labels()->attach(array_diff($labels, [null]));
