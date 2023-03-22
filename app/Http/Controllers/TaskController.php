@@ -11,6 +11,7 @@ use App\Http\Requests\TaskUpdateRequest;
 use App\Models\Label;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -25,7 +26,7 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $statuses = TaskStatus::all()
+        $statuses = TaskStatus::has("tasks")
             ->pluck("name", "id")
             ->toArray();
 
@@ -72,7 +73,9 @@ class TaskController extends Controller
     public function store(TaskStoreRequest $request)
     {
         $data = $request->validated();
-        $data["created_by_id"] = auth()->user()->id;
+        $user = Auth::user();
+
+        $data["created_by_id"] = $user->id;
         $labels = $request->labels;
 
         $task = new Task();
