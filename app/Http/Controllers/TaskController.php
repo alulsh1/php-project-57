@@ -3,18 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use Illuminate\Http\Request;
 use App\Models\TaskStatus;
 use App\Models\User;
 use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Label;
-use Illuminate\Http\RedirectResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -73,27 +70,15 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TaskStoreRequest $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                "name" => "required|unique:tasks,name|max:255",
-                "description" => "max:1000",
-                "status_id" => "required",
-                "assigned_to_id" => "nullable",
-            ],
-            [
-                "name.unique" => "«адача с таким именем уже существует",
-            ]
-        );
-
-        $data = $validator->validated();
+        $data = $request->validated();
         $user = Auth::user();
+
+        $data["created_by_id"] = $user->id;
         $labels = $request->labels;
 
         $task = new Task();
-        $task = $user->createdTasks()->make();
         $task->fill($data);
         $task->save();
         $task->labels()->attach(array_diff($labels, [null]));
@@ -143,28 +128,9 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Task $task)
+    public function update(TaskUpdateRequest $request, Task $task)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                //   'name' => 'required | unique:tasks,name,'.$this->task->id,
-
-                "name" => [
-                    "required",
-                    Rule::unique("tasks", "name")->ignore($task->id),
-                    "max:255",
-                ],
-                "description" => "max:1000",
-                "status_id" => "required",
-                "assigned_to_id" => "nullable",
-            ],
-            [
-                "name.unique" => "«адача с таким именем уже существует",
-            ]
-        );
-
-        $data = $validator->validated();
+        $data = $request->validated();
         $labels = $request->labels ?? [];
         $task->update($data);
         $task->labels()->sync(array_diff($labels, [null]));
