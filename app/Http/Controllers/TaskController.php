@@ -20,11 +20,7 @@ class TaskController extends Controller
     {
         $this->authorizeResource(Task::class, "task");
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
         $statuses = TaskStatus::all()->mapWithKeys(function ($item, $key) {
@@ -52,11 +48,6 @@ class TaskController extends Controller
         );
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $statuses = TaskStatus::all();
@@ -65,12 +56,6 @@ class TaskController extends Controller
         return view("task.create", compact("statuses", "users", "labels"));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(TaskStoreRequest $request)
     {
         $data = $request->validated();
@@ -86,23 +71,11 @@ class TaskController extends Controller
         return redirect()->route("tasks.index");
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
     public function show(Task $task)
     {
         return view("task.show", compact("task"));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
     public function edit(Task $task)
     {
         $statuses = TaskStatus::all()->mapWithKeys(function ($item, $key) {
@@ -121,13 +94,6 @@ class TaskController extends Controller
         );
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
     public function update(TaskUpdateRequest $request, Task $task)
     {
         $data = $request->validated();
@@ -138,12 +104,6 @@ class TaskController extends Controller
         return redirect()->route("tasks.index");
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Task  $task
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Task $task)
     {
         $task->labels()->detach();
