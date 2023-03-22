@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use Illuminate\Http\Request;
 use App\Models\TaskStatus;
 use App\Models\User;
 use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use App\Models\Label;
+use Illuminate\Http\RedirectResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
@@ -74,11 +75,10 @@ class TaskController extends Controller
     {
         $data = $request->validated();
         $user = Auth::user();
-
-        $data["created_by_id"] = $user->id;
         $labels = $request->labels;
 
         $task = new Task();
+        $task = $user->createdTasks()->make();
         $task->fill($data);
         $task->save();
         $task->labels()->attach(array_diff($labels, [null]));
