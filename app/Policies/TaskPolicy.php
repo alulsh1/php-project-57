@@ -90,6 +90,6 @@ class TaskPolicy
      */
     public function forceDelete(User $user, Task $task)
     {
-        //
+        return false;
     }
 }

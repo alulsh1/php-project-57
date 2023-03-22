@@ -25,9 +25,9 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $statuses = TaskStatus::all()->pluck("name", "id");
+        $statuses = TaskStatus::all()->pluck("name", "id")->toArray();;
 
-        $users = User::all()->pluck("name", "id");
+        $users = User::all()->pluck("name", "id")->toArray();;
 
         $tasks = QueryBuilder::for(Task::class)
             ->allowedFilters([
@@ -139,10 +139,8 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        if ($task) {
             $task->labels()->detach();
             $task->delete();
-        }
         flash(__("messages.taskdelete"))->success();
         return redirect()->route("tasks.index");
     }

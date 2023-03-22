@@ -51,11 +51,6 @@ class TaskStatusController extends Controller
      * @param  \App\Models\TaskStatus  $taskStatus
      * @return \Illuminate\Http\Response
      */
-    public function show(TaskStatus $taskStatus)
-    {
-        //
-    }
-
     /**
      * Show the form for editing the specified resource.
      *
