@@ -9,10 +9,12 @@ use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Label;
 use Illuminate\Http\RedirectResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
@@ -76,17 +78,17 @@ class TaskController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "name" => "required | unique:tasks",
-                "description" => "nullable|string",
+                "name" => "required|unique:tasks,name|max:255",
+                "description" => "max:1000",
                 "status_id" => "required",
-                "assigned_to_id" => "nullable|integer",
+                "assigned_to_id" => "nullable",
             ],
             [
                 "name.unique" => "«адача с таким именем уже существует",
             ]
         );
 
-        $data = $request->validated();
+        $data = $validator->validated();
         $user = Auth::user();
         $labels = $request->labels;
 
@@ -150,18 +152,19 @@ class TaskController extends Controller
 
                 "name" => [
                     "required",
-                    Rule::unique("tasks")->ignore($this->task->id),
+                    Rule::unique("tasks", "name")->ignore($task->id),
+                    "max:255",
                 ],
-                "description" => "nullable|string",
+                "description" => "max:1000",
                 "status_id" => "required",
-                "assigned_to_id" => "nullable|integer",
+                "assigned_to_id" => "nullable",
             ],
             [
                 "name.unique" => "«адача с таким именем уже существует",
             ]
         );
 
-        $data = $request->validated();
+        $data = $validator->validated();
         $labels = $request->labels ?? [];
         $task->update($data);
         $task->labels()->sync(array_diff($labels, [null]));
