@@ -110,6 +110,5 @@ class TaskController extends Controller
         $task->delete();
         flash(__("messages.taskdelete"))->success();
         return redirect()->route("tasks.index");
-    dd(111);
     }
 }
